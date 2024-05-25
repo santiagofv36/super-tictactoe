@@ -1,35 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Tictactoe from './components/Tictactoe';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main className="flex flex-col items-center bg-slate-800 min-h-screen pt-4 w-full gap-8">
+      <header className="flex flex-col items-center text-white gap-4">
+        <h1 className="font-bold text-5xl">Super Tictactoe</h1>
+        <p className="text-lg">Welcome to Super Tictactoe</p>
+      </header>
+      <section className="bg-white flex justify-center items-center px-32 h-full">
+        <Tictactoe />
+      </section>
+    </main>
+  );
 }
-
-export default App
