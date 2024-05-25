@@ -4,7 +4,6 @@ import { Play } from './types/enums';
 
 export default function App() {
   const [depth, setDepth] = React.useState(1);
-  
 
   const onDepthChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = e.currentTarget;
@@ -23,7 +22,7 @@ export default function App() {
           className="bg-blue-500 text-white p-2 rounded disabled:opacity-50"
           name="1"
           onClick={onDepthChange}
-          disabled={depth === 1}
+          disabled={depth === 1 || plays.length > 0}
         >
           Depth 1
         </button>
@@ -31,7 +30,7 @@ export default function App() {
           className="bg-blue-500 text-white p-2 rounded disabled:opacity-50"
           name="2"
           onClick={onDepthChange}
-          disabled={depth === 2}
+          disabled={depth === 2 || plays.length > 0}
         >
           Depth 2
         </button>

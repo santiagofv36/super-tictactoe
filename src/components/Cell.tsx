@@ -1,4 +1,3 @@
-import React from 'react';
 import { Play, TURN } from '../types/enums';
 
 interface CellProps {
@@ -16,16 +15,14 @@ export default function Cell({
   turn,
   plays,
 }: CellProps) {
-  const [value, setValue] = React.useState<TURN.X | TURN.O | undefined>(
-    undefined
-  );
+  const hasValue = plays.some((play) => play.row === row && play.col === col);
 
   const onPlay = () => {
-    setValue(turn);
-    onRegisterPlay({ row, col, turn });
+    if (!hasValue) {
+      onRegisterPlay({ row, col, turn });
+    }
+    console.log(row, col);
   };
-
-  const hasValue = plays.some((play) => play.row === row && play.col === col);
 
   return (
     <div
@@ -33,7 +30,8 @@ export default function Cell({
       onClick={onPlay}
       role="button"
     >
-      {hasValue && value}
+      {hasValue &&
+        plays.find((play) => play.row === row && play.col === col)?.turn}
     </div>
   );
 }
