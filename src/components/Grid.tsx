@@ -1,41 +1,29 @@
-import InnerGrid from './InnerGrid';
+interface GridProps {
+  depth: number;
+  limit?: number;
+}
 
-export default function Grid() {
+export default function Grid({ depth, limit = 3 }: GridProps) {
+  if (depth <= 0) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col w-full">
-      <div className="w-full flex">
-        <div className="border-b-4 border-r-4 border-black w-full p-4">
-          <InnerGrid />
+      {Array.from({ length: limit }, (_, i) => (
+        <div className="w-full flex" key={i + 15}>
+          {Array.from({ length: limit }, (_, j) => (
+            <div
+              className={`${i === limit - 1 ? '' : 'border-b-4'}  ${
+                j === limit - 1 ? '' : 'border-r-4'
+              } border-black w-full p-6`}
+              key={j}
+            >
+              <Grid depth={depth - 1} limit={limit} />
+            </div>
+          ))}
         </div>
-        <div className="border-b-4 border-r-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-        <div className="border-b-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-      </div>
-      <div className="w-full flex">
-        <div className="border-b-4 border-r-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-        <div className="border-b-4 border-r-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-        <div className="border-b-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-      </div>
-      <div className="w-full flex">
-        <div className="border-r-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-        <div className="border-r-4 border-black w-full p-4">
-          <InnerGrid />
-        </div>
-        <div className="border-black w-full p-4">
-          <InnerGrid />
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
