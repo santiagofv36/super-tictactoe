@@ -6,10 +6,13 @@ interface GridProps {
   depth: number;
   limit?: number;
   globalPlays: Play[];
-  setGlobalPlays: React.Dispatch<React.SetStateAction<Play[]>>;
+  setGlobalPlays: (play: Play) => void;
   baseRow?: number;
   baseCol?: number;
   disabled?: boolean;
+  setNextGrid?: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+  nextGrid?: [number, number] | null;
+  turn: TURN;
 }
 
 export default function Grid({
@@ -20,6 +23,9 @@ export default function Grid({
   baseRow = 0,
   baseCol = 0,
   disabled = false,
+  setNextGrid,
+  nextGrid,
+  turn,
 }: GridProps) {
   const [localPlays, setLocalPlays] = React.useState<Play[]>([]);
   const [winner, setWinner] = React.useState<TURN | null>(null);
@@ -34,7 +40,7 @@ export default function Grid({
       board[row][col] = turn;
     });
 
-    console.log(localPlays);
+    // console.log(localPlays);
 
     // Check rows
     for (let i = 0; i < limit; i++) {
@@ -98,26 +104,26 @@ export default function Grid({
 
   const onRegisterPlay = (play: Play) => {
     setLocalPlays((prev) => [...prev, play]);
-    setGlobalPlays((prev) => [
-      ...prev,
-      {
-        ...play,
-        row: baseRow * limit + play.row,
-        col: baseCol * limit + play.col,
-      },
-    ]);
+    setGlobalPlays({
+      ...play,
+      row: baseRow * limit + play.row,
+      col: baseCol * limit + play.col,
+    });
+    setNextGrid?.([play.row, play.col]);
   };
 
   if (depth <= 0) {
     return null;
   }
 
+  const isDisabled = disabled && depth === 1;
+
   return (
-    <div className={` ${disabled ? 'bg-slate-600 opacity-30' : ''} `}>
+    <div className={` ${isDisabled ? 'pointer-events-none z-10' : ''} `}>
       <div className="relative flex flex-col w-full justify-center items-center">
         {depth === 1 && winner ? (
-          <div className="absolute text-[250px] flex justify-center items-center w-full">
-            <span className="z-10 w-full flex items-center justify-center">
+          <div className="absolute text-[250px] flex justify-center items-center w-full mb-8">
+            <span className="z-40 w-full flex items-center justify-center">
               {winner}
             </span>
           </div>
@@ -128,12 +134,13 @@ export default function Grid({
               <div
                 className={`${i === limit - 1 ? '' : 'border-b-4'}  ${
                   j === limit - 1 ? '' : 'border-r-4'
-                } border-black w-full ${depth - 1 !== 0 ? 'p-6' : ''} 
+                } w-full ${depth - 1 !== 0 ? 'p-6' : ''} 
                 ${
                   winner === TURN.X || winner === TURN.O
                     ? 'pointer-events-none'
                     : ''
                 }
+                ${isDisabled ? 'border-black/50' : 'border-black'}
                 `}
                 key={j}
                 id={`${i}-${j}`}
@@ -147,13 +154,19 @@ export default function Grid({
                     baseCol={baseCol * limit + j}
                     globalPlays={globalPlays}
                     setGlobalPlays={setGlobalPlays}
+                    disabled={
+                      nextGrid ? nextGrid[0] !== i || nextGrid[1] !== j : false
+                    }
+                    setNextGrid={setNextGrid}
+                    nextGrid={nextGrid}
+                    turn={turn}
                   />
                 ) : (
                   <Cell
                     row={i}
                     col={j}
                     onRegisterPlay={onRegisterPlay}
-                    turn={localPlays.length % 2 === 0 ? TURN.X : TURN.O}
+                    turn={turn}
                     plays={localPlays}
                   />
                 )}
